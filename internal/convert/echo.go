@@ -19,11 +19,13 @@ package convert
 import (
 	"github.com/spinnaker/kleat/api/client"
 	"github.com/spinnaker/kleat/api/client/config"
+	"github.com/spinnaker/kleat/internal/options"
 	"github.com/spinnaker/kleat/pkg/version"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 // HalToEcho generates the echo config for the supplied config.Hal h.
-func HalToEcho(h *config.Hal) *config.Echo {
+func HalToEcho(h *config.Hal, opts options.GenerateOptions) *config.Echo {
 	return &config.Echo{
 		Slack:        h.GetNotifications().GetSlack(),
 		Twilio:       h.GetNotifications().GetTwilio(),
@@ -33,6 +35,19 @@ func HalToEcho(h *config.Hal) *config.Echo {
 		Gcb:          h.GetCi().GetGcb(),
 		Stats:        getEchoStats(h),
 		Scheduler:    getEchoScheduler(h),
+		Services:     getEchoServices(opts),
+	}
+}
+
+func getEchoServices(opts options.GenerateOptions) *config.Echo_Services {
+	if !opts.EnableKeel {
+		return nil
+	}
+
+	return &config.Echo_Services{
+		Keel: &config.ServiceSettings{
+			Enabled: wrapperspb.Bool(opts.EnableKeel),
+		},
 	}
 }
 

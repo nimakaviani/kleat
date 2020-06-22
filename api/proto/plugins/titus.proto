@@ -1,0 +1,12 @@
+syntax = "proto3";
+package proto.plugins;
+
+option go_package = "github.com/spinnaker/kleat/api/client/plugins";
+
+import "google/protobuf/wrappers.proto";
+
+message Titus {
+  google.protobuf.BoolValue enabled = 1;
+}
+
+

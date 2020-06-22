@@ -1,0 +1,29 @@
+syntax = "proto3";
+package proto.storage;
+
+option go_package = "github.com/spinnaker/kleat/api/client/storage";
+
+import "google/protobuf/wrappers.proto";
+
+message SQL {
+  // Whether this persistent store is enabled.
+  google.protobuf.BoolValue enabled = 1;
+
+  ConnectionPools connectionPools = 2;
+
+  ConnectionPool migration = 3;
+
+  message ConnectionPools {
+      ConnectionPool default = 1;
+  }
+
+  message ConnectionPool {
+      string user = 1;
+      string password = 2;
+      string jdbcUrl = 3;
+      int32 connectionTimeout = 4;
+      int32 maxLifetime = 5;
+      int32 maxPoolSize = 6;
+  }
+}
+

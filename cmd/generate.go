@@ -18,9 +18,12 @@ package cmd
 
 import (
 	"github.com/spinnaker/kleat/internal/fileio"
+	"github.com/spinnaker/kleat/internal/options"
 
 	"github.com/spf13/cobra"
 )
+
+var opts *options.GenerateOptions
 
 var generateCmd = &cobra.Command{
 	Use:   "generate",
@@ -36,19 +39,21 @@ kleat /path/to/halconfig /path/to/output`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		hal := args[0]
 		dir := args[1]
-		return writeServiceConfigs(hal, dir)
+		return writeServiceConfigs(hal, dir, opts)
 	},
 }
 
-func writeServiceConfigs(halPath string, dir string) error {
+func writeServiceConfigs(halPath string, dir string, opt *options.GenerateOptions) error {
 	h, err := fileio.ParseHalConfig(halPath)
 	if err != nil {
 		return err
 	}
 
-	return fileio.WriteConfigs(h, dir)
+	return fileio.WriteConfigs(h, dir, *opts)
 }
 
 func init() {
+	opts = &options.GenerateOptions{}
+	generateCmd.Flags().BoolVarP(&opts.EnableKeel, "enable-keel", "k", false, "generate keel config")
 	rootCmd.AddCommand(generateCmd)
 }

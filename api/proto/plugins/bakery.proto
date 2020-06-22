@@ -1,0 +1,18 @@
+syntax = "proto3";
+package proto.plugins;
+
+option go_package = "github.com/spinnaker/kleat/api/client/plugins";
+
+import "google/protobuf/wrappers.proto";
+
+message Bakery {
+  google.protobuf.BoolValue enabled = 1;
+  repeated BaseImage baseImages = 2;
+
+  message BaseImage {
+    string candidate = 1;
+    string unstable = 2;
+    string relase = 3;
+    string previous = 4;
+  }
+}

@@ -16,15 +16,20 @@
 
 package convert
 
-import "github.com/spinnaker/kleat/api/client/config"
+import (
+	"github.com/spinnaker/kleat/api/client/config"
+	"github.com/spinnaker/kleat/internal/options"
+	"google.golang.org/protobuf/types/known/wrapperspb"
+)
 
 // HalToOrca generates the orca config for the supplied config.Hal h.
-func HalToOrca(h *config.Hal) *config.Orca {
+func HalToOrca(h *config.Hal, opts options.GenerateOptions) *config.Orca {
 	return &config.Orca{
 		Default:           getDefaults(h),
 		PipelineTemplates: getPipelineTemplates(h),
 		Webhook:           h.GetWebhook(),
 		Services:          getOrcaServices(h),
+		Keel:              getKeelService(h, opts),
 		Tasks:             getOrcaTasks(h),
 	}
 }
@@ -55,6 +60,18 @@ func getOrcaServices(h *config.Hal) *config.Orca_Services {
 			},
 		}
 	}
+
+	return nil
+}
+
+func getKeelService(h *config.Hal, opts options.GenerateOptions) *config.ServiceSettings {
+	if opts.EnableKeel {
+		return &config.ServiceSettings{
+			Enabled: wrapperspb.Bool(true),
+			BaseUrl: "${services.keel.baseUrl:localhost}",
+		}
+	}
+
 	return nil
 }
 

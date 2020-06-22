@@ -47,6 +47,8 @@ message Deck {
   // Configuration for UI-related feature flags.
   Features feature = 11;
 
+  ManagedDelivery managedDelivery = 12;
+
   // Configuration for UI-related feature flags.
   message Features {
     // Enable pipeline template support. Read more at
@@ -65,6 +67,13 @@ message Deck {
 
     // Enable managed pipeline templates v2 UI support.
     google.protobuf.BoolValue managedPipelineTemplatesV2UI = 5;
+
+    // Enable managed delivery
+    google.protobuf.BoolValue managedDelivery = 6;
+  }
+
+  message ManagedDelivery {
+    string manifestBasePath = 1;
   }
 
   // Configuration for the canary UI.

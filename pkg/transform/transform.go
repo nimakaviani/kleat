@@ -21,37 +21,41 @@ package transform
 import (
 	"github.com/spinnaker/kleat/api/client/config"
 	"github.com/spinnaker/kleat/internal/convert"
+	"github.com/spinnaker/kleat/internal/options"
 	"github.com/spinnaker/kleat/internal/serializer"
 	"google.golang.org/protobuf/proto"
 )
 
 // HalToServiceConfigs returns the microservice configurations corresponding
 // to a supplied *config.Hal.
-func HalToServiceConfigs(h *config.Hal) *config.Services {
+func HalToServiceConfigs(h *config.Hal, opts options.GenerateOptions) *config.Services {
 	return &config.Services{
 		Clouddriver: convert.HalToClouddriver(h),
-		Echo:        convert.HalToEcho(h),
-		Front50:     convert.HalToFront50(h),
-		Orca:        convert.HalToOrca(h),
+		Echo:        convert.HalToEcho(h, opts),
+		Front50:     convert.HalToFront50(h, opts),
+		Orca:        convert.HalToOrca(h, opts),
 		Gate:        convert.HalToGate(h),
 		Fiat:        convert.HalToFiat(h),
 		Kayenta:     convert.HalToKayenta(h),
 		Rosco:       convert.HalToRosco(h),
-		Deck:        convert.HalToDeck(h),
+		Deck:        convert.HalToDeck(h, opts),
 		DeckEnv:     convert.HalToDeckEnv(h),
 		Igor:        convert.HalToIgor(h),
 		Monitoring:  convert.HalToMonitoring(h),
+		Keel:        convert.HalToKeel(h, opts),
 	}
 }
 
 // GenerateConfigFiles generates the config files corresponding to a supplied
 // *config.Services.
-func GenerateConfigFiles(s *config.Services) (*config.ConfigFiles, error) {
-	var files = []struct {
+func GenerateConfigFiles(s *config.Services, opts options.GenerateOptions) (*config.ConfigFiles, error) {
+	type fileStruct struct {
 		fileName   string
 		message    proto.Message
 		serializer serializer.Serializer
-	}{
+	}
+
+	var files = []fileStruct{
 		{
 			"clouddriver.yml",
 			s.GetClouddriver(),
@@ -112,6 +116,14 @@ func GenerateConfigFiles(s *config.Services) (*config.ConfigFiles, error) {
 			s.GetMonitoring(),
 			serializer.Yaml,
 		},
+	}
+
+	if opts.EnableKeel {
+		files = append(files, fileStruct{
+			"keel.yml",
+			s.GetKeel(),
+			serializer.Yaml,
+		})
 	}
 
 	cf := make([]*config.ConfigFile, len(files))

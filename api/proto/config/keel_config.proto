@@ -1,0 +1,36 @@
+syntax = "proto3";
+package proto.config;
+
+option go_package = "github.com/spinnaker/kleat/api/client/config";
+
+import "plugins/plugins.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/wrappers.proto";
+
+message KeelConfig {
+    plugins.Plugins plugins = 1;
+    ResourceCheck resourceCheck = 2;
+    ArtifactRefresh artifactRefresh = 3 [json_name = "artifact-refresh"];
+    Constraints constraints = 4;
+
+    message ResourceCheck {
+        google.protobuf.Duration minAgeDuration = 1;
+    }
+
+    message Constraints {
+        ManualJudgement manualJudgement = 1 [json_name = "manual-judgement"];
+    }
+
+    message ManualJudgement {
+        InteractiveNotifications interactiveNotifactions = 1 [json_name = "interactive-notifications"];
+    }
+
+    message InteractiveNotifications {
+        google.protobuf.BoolValue enabled = 1;
+    }
+
+    message ArtifactRefresh {
+        string frequency = 1;
+    }
+}
+

@@ -21,11 +21,12 @@ import (
 
 	"github.com/spinnaker/kleat/api/client/cloudprovider"
 	"github.com/spinnaker/kleat/api/client/config"
+	"github.com/spinnaker/kleat/internal/options"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 // HalToDeck generates the deck config for the supplied config.Hal h.
-func HalToDeck(h *config.Hal) *config.Deck {
+func HalToDeck(h *config.Hal, opts options.GenerateOptions) *config.Deck {
 	gateURL := getGateURL(h)
 	return &config.Deck{
 		GateUrl:         gateURL,
@@ -35,10 +36,11 @@ func HalToDeck(h *config.Hal) *config.Deck {
 		Canary:          getDeckCanaryConfig(h),
 		Changelog:       getDeckChangelogConfig(h),
 		DefaultTimeZone: h.GetTimezone(),
-		Feature:         getDeckFeaturesConfig(h),
+		Feature:         getDeckFeaturesConfig(h, opts),
 		Notifications:   getDeckNotificationsConfig(h),
 		Providers:       getDeckProvidersConfig(h),
 		Version:         h.GetVersion(),
+		ManagedDelivery: getManagedDelivery(opts),
 	}
 }
 
@@ -51,6 +53,16 @@ func getGateURL(h *config.Hal) string {
 		scheme = "https"
 	}
 	return fmt.Sprintf("%s://localhost:8084", scheme)
+}
+
+func getManagedDelivery(opts options.GenerateOptions) *config.Deck_ManagedDelivery {
+	if !opts.EnableKeel {
+		return nil
+	}
+
+	return &config.Deck_ManagedDelivery{
+		ManifestBasePath: ".spinnaker",
+	}
 }
 
 func getDeckCanaryConfig(h *config.Hal) *config.Deck_Canary {
@@ -74,13 +86,14 @@ func getDeckChangelogConfig(_ *config.Hal) *config.Deck_Changelog {
 	//}
 }
 
-func getDeckFeaturesConfig(h *config.Hal) *config.Deck_Features {
+func getDeckFeaturesConfig(h *config.Hal, opts options.GenerateOptions) *config.Deck_Features {
 	return &config.Deck_Features{
 		PipelineTemplates:            h.GetFeatures().GetPipelineTemplates(),
 		Canary:                       h.GetFeatures().GetMineCanary(),
 		ChaosMonkey:                  h.GetFeatures().GetChaos(),
 		FiatEnabled:                  h.GetSecurity().GetAuthz().GetEnabled(),
 		ManagedPipelineTemplatesV2UI: h.GetFeatures().GetManagedPipelineTemplatesV2UI(),
+		ManagedDelivery:              wrapperspb.Bool(opts.EnableKeel),
 	}
 }
 

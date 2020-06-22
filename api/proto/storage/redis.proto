@@ -1,0 +1,14 @@
+syntax = "proto3";
+package proto.storage;
+
+option go_package = "github.com/spinnaker/kleat/api/client/storage";
+
+import "google/protobuf/wrappers.proto";
+
+message Redis {
+  // Whether this persistent store is enabled.
+  google.protobuf.BoolValue enabled = 1;
+
+  string host = 2;
+  int32  port = 3;
+}

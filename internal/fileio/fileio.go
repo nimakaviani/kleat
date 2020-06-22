@@ -25,6 +25,7 @@ import (
 	"path/filepath"
 
 	"github.com/spinnaker/kleat/api/client/config"
+	"github.com/spinnaker/kleat/internal/options"
 	"github.com/spinnaker/kleat/internal/protoyaml"
 	"github.com/spinnaker/kleat/internal/validate"
 	"github.com/spinnaker/kleat/pkg/transform"
@@ -53,13 +54,13 @@ func ParseHalConfig(halPath string) (*config.Hal, error) {
 
 // WriteConfigs generates the service configs from the supplied hal, and writes
 // them to the directory dir.
-func WriteConfigs(hal *config.Hal, dir string) error {
+func WriteConfigs(hal *config.Hal, dir string, opts options.GenerateOptions) error {
 	if err := ensureDirectory(dir); err != nil {
 		return err
 	}
 
-	services := transform.HalToServiceConfigs(hal)
-	configFiles, err := transform.GenerateConfigFiles(services)
+	services := transform.HalToServiceConfigs(hal, opts)
+	configFiles, err := transform.GenerateConfigFiles(services, opts)
 	if err != nil {
 		return err
 	}

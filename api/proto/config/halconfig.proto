@@ -16,6 +16,8 @@ import "storage/persistent_storage.proto";
 import "canary/canary.proto";
 import "repository/repository.proto";
 import "metricstores/metricstores.proto";
+import "plugins/plugins.proto";
+import "config/keel_config.proto";
 
 // Configuration for a Spinnaker installation.
 message Hal {
@@ -30,7 +32,6 @@ message Hal {
   security.WebhookConfig webhook = 9;
   security.Security security = 10;
   canary.Canary canary = 11;
-
   // The timezone in which your Spinnaker instance runs. This affects what the
   // UI will display as well as how CRON triggers are run.
   string timezone = 12;
@@ -42,4 +43,7 @@ message Hal {
 
   // Configuration for the Spinnaker monitoring daemon metric stores.
   metricstores.MetricStores metricStores = 15;
+
+  KeelConfig keel = 16;
+  plugins.Plugins plugins = 17;
 }

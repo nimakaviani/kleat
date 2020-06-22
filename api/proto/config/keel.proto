@@ -1,0 +1,52 @@
+syntax = "proto3";
+package proto.config;
+
+option go_package = "github.com/spinnaker/kleat/api/client/config";
+
+import "google/protobuf/wrappers.proto";
+import "config/service_enabled.proto";
+import "config/keel_config.proto";
+import "storage/sql.proto";
+
+message Keel {
+    KeelConfig keel = 1;
+    Eureka eureka = 2;
+    Services services = 3;
+    storage.SQL sql = 4;
+    OkHttpClient okHttpClient = 5;
+    Server server = 6;
+    Retrofit2 retrofit2 = 7;
+
+    ServiceSettings echo = 8;
+    ServiceSettings igor = 9;
+    ServiceSettings orca = 10;
+    ServiceSettings clouddriver = 11;
+    ServiceSettings front50 = 12;
+
+    message Services {
+        ServiceSettings fiat = 1;
+    }
+
+    message Eureka {
+        google.protobuf.BoolValue enabled = 1;
+    }
+
+    message OkHttpClient {
+        google.protobuf.BoolValue propagateSpinnakerHeaders = 1;
+        int32 connectTimeoutMs = 2;
+        int32 readTimeoutMs = 3;
+    }
+
+    message Server {
+        int32 port = 1;
+        message SSL {
+            google.protobuf.BoolValue enabled = 1;
+            string clientAuth = 2;
+            string crlFile = 3;
+        }
+    }
+
+    message Retrofit2 {
+        string logLevel = 1;
+    }
+}

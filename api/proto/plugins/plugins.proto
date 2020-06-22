@@ -1,0 +1,20 @@
+syntax = "proto3";
+package proto.plugins;
+
+option go_package = "github.com/spinnaker/kleat/api/client/plugins";
+
+import "plugins/bakery.proto";
+import "plugins/delivery_config.proto";
+import "plugins/ec2.proto";
+import "plugins/k8s.proto";
+import "plugins/titus.proto";
+
+// Configuration of Spinnaker's plugins
+message Plugins {
+  Bakery bakery = 1;
+  DeliveryConfig deliveryConfig = 2;
+  EC2 ec2 = 3;
+  Kubernetes k8s = 4;
+  Titus titus = 5;
+}
+
