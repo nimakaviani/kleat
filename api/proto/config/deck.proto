@@ -70,6 +70,9 @@ message Deck {
 
     // Enable managed delivery
     google.protobuf.BoolValue managedDelivery = 6;
+
+    // Enable managed delivery
+    google.protobuf.BoolValue managedResources = 7;
   }
 
   message ManagedDelivery {

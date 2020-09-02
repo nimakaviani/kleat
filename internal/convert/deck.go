@@ -94,6 +94,7 @@ func getDeckFeaturesConfig(h *config.Hal, opts options.GenerateOptions) *config.
 		FiatEnabled:                  h.GetSecurity().GetAuthz().GetEnabled(),
 		ManagedPipelineTemplatesV2UI: h.GetFeatures().GetManagedPipelineTemplatesV2UI(),
 		ManagedDelivery:              wrapperspb.Bool(opts.EnableKeel),
+		ManagedResources:             wrapperspb.Bool(opts.EnableKeel),
 	}
 }
 
