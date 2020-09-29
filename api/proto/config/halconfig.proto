@@ -16,6 +16,7 @@ import "storage/persistent_storage.proto";
 import "canary/canary.proto";
 import "repository/repository.proto";
 import "metricstores/metricstores.proto";
+import "config/managed_delivery.proto";
 
 // Configuration for a Spinnaker installation.
 message Hal {
@@ -42,4 +43,7 @@ message Hal {
 
   // Configuration for the Spinnaker monitoring daemon metric stores.
   metricstores.MetricStores metricStores = 15;
+
+  // Configuration for ManagedDelivery's Keel component
+  ManagedDelivery managedDelivery = 16;
 }

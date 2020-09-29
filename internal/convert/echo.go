@@ -33,6 +33,19 @@ func HalToEcho(h *config.Hal) *config.Echo {
 		Gcb:          h.GetCi().GetGcb(),
 		Stats:        getEchoStats(h),
 		Scheduler:    getEchoScheduler(h),
+		Services:     getEchoServices(h),
+	}
+}
+
+func getEchoServices(h *config.Hal) *config.Echo_Services {
+	if !h.GetManagedDelivery().GetEnabled().GetValue() {
+		return nil
+	}
+
+	return &config.Echo_Services{
+		Keel: &config.ServiceSettings{
+			Enabled: h.GetManagedDelivery().GetEnabled(),
+		},
 	}
 }
 
