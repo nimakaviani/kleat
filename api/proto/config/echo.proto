@@ -6,8 +6,8 @@ option go_package = "github.com/spinnaker/kleat/api/client/config";
 import "google/protobuf/wrappers.proto";
 
 import "artifact/artifacts.proto";
-import "ci/gcb.proto";
 import "config/service_enabled.proto";
+import "ci/gcb.proto";
 import "notification/github_status.proto";
 import "notification/slack.proto";
 import "notification/twilio.proto";
@@ -25,12 +25,12 @@ message Echo {
     ci.GoogleCloudBuild gcb = 6;
     Stats stats = 7;
     Scheduler scheduler = 8;
-
-    // Configuration for the status of non-core services.
     Services services = 9;
 
+    // Configuration for the status of non-core services.
     message Services {
-        ServiceSettings keel = 1;
+      // Enabling keel for the echo service
+      ServiceSettings keel = 1;
     }
 
     // Echo scheduler configuration.
